@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:inkscribe/utils/functions.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,21 +17,39 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         elevation: 0.0,
         automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Hi, Anthony',
-              style: GoogleFonts.playfairDisplay(
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
+        title: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FutureBuilder<String?>(
+                future: ReusableFunctions().getCachedUsername(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Loading state
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasData && snapshot.data != null) {
+                    // Display the welcome message
+                    final username = snapshot.data!;
+                    return Text(
+                      'Hi $username!',
+                      style: GoogleFonts.playfairDisplay(fontSize: 24.0, fontWeight: FontWeight.bold),
+                    );
+                  } else {
+                    // No cached username
+                    return Text(
+                      'Welcome!',
+                      style: GoogleFonts.playfairDisplay(fontSize: 24.0, fontWeight: FontWeight.bold),
+                    );
+                  }
+                },
               ),
-            ),
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.search_rounded),
-            ),
-          ],
+              IconButton(
+                onPressed: () {},
+                icon: const Icon(Icons.notifications_outlined, size: 28.0),
+              ),
+            ],
+          ),
         ),
       ),
       body: SingleChildScrollView(

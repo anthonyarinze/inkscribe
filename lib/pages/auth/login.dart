@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../components/dialog_card.dart';
+import '../../utils/auth_service.dart';
 import '../../components/auth_button.dart';
 import '../../components/auth_form_texfield.dart';
 import '../../components/page_builder.dart';
 import '../../components/third_party_auth_button.dart';
-import '../../theme/palette.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -16,14 +17,14 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  String? _username;
-  String? _email;
-  String? _password;
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      //Do something with formdata;
-    }
+  @override
+  void dispose() {
+    super.dispose();
+    _email.dispose();
+    _password.dispose();
   }
 
   @override
@@ -52,25 +53,34 @@ class _LoginState extends State<Login> {
                   children: [
                     AuthFormTextField(
                       hintText: 'Email',
-                      onSaved: (newValue) => _email = newValue,
                       isPassword: false,
+                      textEditingController: _email,
                     ),
                     AuthFormTextField(
-                      hintText: 'Password',
-                      onSaved: (newValue) => _password = newValue,
                       isPassword: true,
+                      hintText: 'Password',
+                      textEditingController: _password,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: AuthButton(
-                        hasImage: false,
                         text: 'Login',
                         onPressed: () {
                           FormState? formState = _formKey.currentState;
                           if (formState!.validate()) {
-                            //DO something with form data
+                            AuthServices().loginWithEmailAndPassword(
+                              _email.text,
+                              _password.text,
+                            );
                           } else {
-                            // Display error message to user;
+                            showDialog(
+                              context: context,
+                              builder: (context) => const CustomDialogBox(
+                                title: 'Form Incomplete',
+                                descriptions: 'Please fill out the form before signing up.',
+                                text: 'Okay',
+                              ),
+                            );
                           }
                         },
                       ),

@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 
 class ReusableFunctions {
+  static const FlutterSecureStorage flutterSecureStorage = FlutterSecureStorage();
+
   static final Logger logger = Logger(printer: PrettyPrinter(colors: true, printTime: true, printEmojis: true));
 
   static void logInfo(dynamic message) => logger.i(message);
@@ -25,5 +28,13 @@ class ReusableFunctions {
     } on SocketException catch (_) {
       return false;
     }
+  }
+
+  Future<void> cacheUsername(String username) async {
+    flutterSecureStorage.write(key: 'username', value: username);
+  }
+
+  Future<String?> getCachedUsername() async {
+    return flutterSecureStorage.read(key: 'username');
   }
 }

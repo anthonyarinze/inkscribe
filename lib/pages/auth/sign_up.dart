@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:inkscribe/components/auth_button.dart';
-import 'package:inkscribe/components/page_builder.dart';
-import 'package:inkscribe/components/third_party_auth_button.dart';
-import 'package:inkscribe/pages/auth/login.dart';
-import 'package:inkscribe/theme/palette.dart';
 
+import '../../components/auth_button.dart';
+import '../../components/dialog_card.dart';
+import '../../components/page_builder.dart';
+import '../../components/third_party_auth_button.dart';
+import 'login.dart';
+import '../master.dart';
+import '../../utils/auth_service.dart';
 import '../../components/auth_form_texfield.dart';
 
 class SignUp extends StatefulWidget {
@@ -17,14 +19,16 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
-  String? _username;
-  String? _email;
-  String? _password;
+  final TextEditingController _username = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      //Do something with formdata;
-    }
+  @override
+  void dispose() {
+    super.dispose();
+    _username.dispose();
+    _email.dispose();
+    _password.dispose();
   }
 
   @override
@@ -53,31 +57,59 @@ class _SignUpState extends State<SignUp> {
                 child: Column(
                   children: [
                     AuthFormTextField(
-                      hintText: 'Username',
-                      onSaved: (newValue) => _username = newValue,
                       isPassword: false,
+                      hintText: 'Username',
+                      textEditingController: _username,
                     ),
                     AuthFormTextField(
                       hintText: 'Email',
-                      onSaved: (newValue) => _email = newValue,
                       isPassword: false,
+                      textEditingController: _email,
                     ),
                     AuthFormTextField(
-                      hintText: 'Password',
-                      onSaved: (newValue) => _password = newValue,
                       isPassword: true,
+                      hintText: 'Password',
+                      textEditingController: _password,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
                       child: AuthButton(
-                        hasImage: false,
                         text: 'Sign Up',
                         onPressed: () {
                           FormState? formState = _formKey.currentState;
                           if (formState!.validate()) {
-                            //DO something with form data
+                            AuthServices()
+                                .signUpWithEmailAndPassword(
+                                  _username.text.toString(),
+                                  _email.text.trim(),
+                                  _password.text.toString(),
+                                )
+                                .then(
+                                  (value) => showDialog(
+                                    context: context,
+                                    builder: (context) => CustomDialogBox(
+                                      title: 'Account Created',
+                                      descriptions: 'Your account has been successfully created :)',
+                                      text: 'Okay',
+                                      onPressed: () => Navigator.push(
+                                        context,
+                                        ZoomPageRoute(
+                                          page: const Master(),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
                           } else {
                             // Display error message to user;
+                            showDialog(
+                              context: context,
+                              builder: (context) => const CustomDialogBox(
+                                title: 'Form Incomplete',
+                                descriptions: 'Please fill out the form before signing up.',
+                                text: 'Okay',
+                              ),
+                            );
                           }
                         },
                       ),

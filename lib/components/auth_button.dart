@@ -10,7 +10,6 @@ class AuthButton extends StatelessWidget {
     this.image,
     required this.onPressed,
     required this.text,
-    required this.hasImage,
   });
 
   final VoidCallback onPressed;
@@ -18,32 +17,34 @@ class AuthButton extends StatelessWidget {
   final Color? color;
   final String text;
   final String? image;
-  final bool hasImage;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 60.0,
-      width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-      decoration: BoxDecoration(
-        border: border,
-        gradient: LinearGradient(
-          colors: [
-            Palette.primeBlue.withOpacity(0.4),
-            Palette.primePurple,
-          ],
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        height: 60.0,
+        width: MediaQuery.of(context).size.width,
+        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
+          border: border,
+          gradient: LinearGradient(
+            colors: [
+              Palette.primeBlue.withOpacity(0.4),
+              Palette.primePurple,
+            ],
+          ),
+          color: color,
+          borderRadius: BorderRadius.circular(8.0),
         ),
-        color: color,
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Center(
-        child: Text(
-          text,
-          style: GoogleFonts.roboto(
-            fontSize: 18.0,
-            color: Colors.white,
-            fontWeight: FontWeight.w400,
+        child: Center(
+          child: Text(
+            text,
+            style: GoogleFonts.roboto(
+              fontSize: 18.0,
+              color: Colors.white,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ),
       ),

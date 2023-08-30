@@ -6,14 +6,14 @@ import '../theme/palette.dart';
 class AuthFormTextField extends StatefulWidget {
   const AuthFormTextField({
     super.key,
-    required this.onSaved,
     required this.hintText,
     required this.isPassword,
+    required this.textEditingController,
   });
 
-  final Function(String?)? onSaved;
   final String hintText;
   final bool isPassword;
+  final TextEditingController textEditingController;
 
   @override
   State<AuthFormTextField> createState() => _AuthFormTextFieldState();
@@ -35,9 +35,37 @@ class _AuthFormTextFieldState extends State<AuthFormTextField> {
       child: Center(
         child: TextFormField(
           cursorHeight: 25.0,
-          obscureText: !isVisible,
-          onSaved: widget.onSaved,
           cursorColor: Palette.primePurple,
+          controller: widget.textEditingController,
+          obscureText: !isVisible && widget.isPassword,
+          validator: (value) {
+            if (widget.hintText == 'Username') {
+              if (value == null || value.isEmpty) {
+                return 'Username cannot be empty';
+              }
+            } else if (widget.hintText == 'Email') {
+              if (value == null || value.isEmpty) {
+                return 'Email cannot be empty';
+              }
+              if (!value.contains('@') || !value.contains('.')) {
+                return 'Invalid email address';
+              }
+            } else if (widget.hintText == 'Password') {
+              if (value == null || value.isEmpty) {
+                return 'Password cannot be empty';
+              }
+              if (value.length < 6) {
+                return 'Password must be at least 6 characters';
+              }
+              if (!value.contains(RegExp(r'[A-Z]'))) {
+                return 'Password must contain at least one capital letter';
+              }
+              if (!value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
+                return 'Password must contain at least one symbol';
+              }
+            }
+            return null;
+          },
           decoration: InputDecoration(
             border: InputBorder.none,
             hintText: widget.hintText,
@@ -52,7 +80,10 @@ class _AuthFormTextFieldState extends State<AuthFormTextField> {
                           isVisible = !isVisible;
                         });
                       },
-                      icon: Icon(isVisible ? Icons.visibility : Icons.visibility_off),
+                      icon: Icon(
+                        isVisible ? Icons.visibility : Icons.visibility_off,
+                        color: Colors.black,
+                      ),
                     )
                   : const SizedBox.shrink(),
             ),
