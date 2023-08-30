@@ -10,7 +10,6 @@
 .svn/
 migrate_working_dir/
 *.env
-/lib/firebase_options.dart
 
 # IntelliJ related
 *.iml
@@ -44,3 +43,6 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Firebase
+firebase_options.dart
