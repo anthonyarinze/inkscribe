@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:inkscribe/pages/account.dart';
 import 'package:inkscribe/pages/home_page.dart';
 import 'package:inkscribe/pages/search.dart';
+import 'package:inkscribe/providers/index_provider.dart';
 
 import '../theme/palette.dart';
 
-class Master extends StatefulWidget {
+class Master extends ConsumerStatefulWidget {
   const Master({super.key});
 
   @override
-  State<Master> createState() => _MasterState();
+  ConsumerState<Master> createState() => _MasterState();
 }
 
-class _MasterState extends State<Master> {
-  int currentIndex = 0;
-
+class _MasterState extends ConsumerState<Master> {
   List<Widget> screens = [
     const HomePage(),
     const Search(),
@@ -37,6 +37,7 @@ class _MasterState extends State<Master> {
   @override
   Widget build(BuildContext context) {
     double displayWidth = MediaQuery.of(context).size.width;
+    var currentIndex = ref.read(currentIndexProvider.notifier).state;
     return Scaffold(
       extendBody: true,
       body: Stack(
@@ -66,7 +67,7 @@ class _MasterState extends State<Master> {
                 itemBuilder: (context, index) => InkWell(
                   onTap: () {
                     setState(() {
-                      currentIndex = index;
+                      ref.read(currentIndexProvider.notifier).state = index;
                       HapticFeedback.lightImpact();
                     });
                   },

@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:inkscribe/components/page_builder.dart';
+import 'package:inkscribe/pages/auth/login.dart';
 import 'package:inkscribe/pages/master.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -18,12 +20,27 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   late Timer _timer;
+  User? user;
+
+  updateUserState(event) {
+    setState(() {
+      user = event;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    FirebaseAuth.instance.authStateChanges().listen((event) => updateUserState(event));
     _timer = Timer(const Duration(seconds: 2), () {
-      Navigator.push(context, ZoomPageRoute(page: const Master()));
+      Navigator.push(
+        context,
+        user == null
+            ? ZoomPageRoute(page: const Login())
+            : ZoomPageRoute(
+                page: const Master(),
+              ),
+      );
     });
   }
 

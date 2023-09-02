@@ -1,15 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:inkscribe/components/book_card.dart';
+import 'package:inkscribe/providers/index_provider.dart';
+import 'package:inkscribe/utils/auth_service.dart';
 import 'package:inkscribe/utils/functions.dart';
 
-class HomePage extends StatefulWidget {
+import '../components/page_builder.dart';
+import 'book_details.dart';
+
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
+  Future<List<BookCard>> fetchBooksFromDatabase() async {
+    final response = await AuthServices().getBooksFromFirestore();
+
+    return response;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,9 +84,8 @@ class _HomePageState extends State<HomePage> {
                 style: GoogleFonts.roboto(fontSize: 16.0, fontWeight: FontWeight.w500),
               ),
             ),
-            TextButton(
-              onPressed: () {},
-              style: const ButtonStyle(),
+            InkWell(
+              onTap: () {},
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -88,6 +100,43 @@ class _HomePageState extends State<HomePage> {
                   Icon(Icons.arrow_forward_ios_rounded),
                 ],
               ),
+            ),
+            FutureBuilder<List<BookCard>>(
+              future: fetchBooksFromDatabase(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator(); // Show loading indicator
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  final List<BookCard> books = snapshot.data!;
+                  return GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: books.length,
+                    physics: const BouncingScrollPhysics(),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.75,
+                    ),
+                    itemBuilder: (context, index) {
+                      final book = books[index];
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          ZoomPageRoute(page: const BookDetails()),
+                        ),
+                        child: BookCard(
+                          imageUrl: book.imageUrl,
+                          title: book.title,
+                          author: book.author,
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return const Text('No books found.');
+                }
+              },
             ),
           ],
         ),

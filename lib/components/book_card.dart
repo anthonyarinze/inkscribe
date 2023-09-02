@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:inkscribe/utils/auth_service.dart';
 
-class BookCard extends StatelessWidget {
+class BookCard extends StatefulWidget {
   final String imageUrl;
   final String title;
   final String author;
@@ -12,6 +13,12 @@ class BookCard extends StatelessWidget {
     required this.author,
   });
 
+  @override
+  State<BookCard> createState() => _BookCardState();
+}
+
+class _BookCardState extends State<BookCard> {
+  bool isBookmarked = false;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,7 +40,7 @@ class BookCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(4.0),
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: NetworkImage(imageUrl),
+          image: NetworkImage(widget.imageUrl),
         ),
       ),
       child: Stack(
@@ -42,19 +49,45 @@ class BookCard extends StatelessWidget {
             left: 120.0,
             top: 8.0,
             child: GestureDetector(
-              onTap: () => print('Bookmark added'),
-              child: Container(
-                height: 40.0,
-                width: 40.0,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Color(0xFFf2f7ff),
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.bookmark_add_outlined,
-                  ),
-                ),
+              onTap: () {
+                setState(() {
+                  isBookmarked = !isBookmarked;
+                });
+                if (isBookmarked) {
+                  AuthServices().addToCollection(widget.title, widget.imageUrl, widget.author);
+                } else {
+                  AuthServices().removeFromCollection(widget.title);
+                }
+              },
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                child: isBookmarked
+                    ? Container(
+                        height: 40.0,
+                        width: 40.0,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFFf2f7ff),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.bookmark_rounded,
+                          ),
+                        ),
+                      )
+                    : Container(
+                        height: 40.0,
+                        width: 40.0,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Color(0xFFf2f7ff),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.bookmark_add_outlined,
+                          ),
+                        ),
+                      ),
               ),
             ),
           ),
@@ -78,7 +111,7 @@ class BookCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        title,
+                        widget.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.roboto(
@@ -87,7 +120,7 @@ class BookCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        author,
+                        widget.author,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.roboto(

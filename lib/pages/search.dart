@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:inkscribe/components/page_builder.dart';
-import 'package:inkscribe/components/search_bar.dart';
-import 'package:inkscribe/pages/book_details.dart';
+import 'book_details.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../components/search_bar.dart';
+import '../components/page_builder.dart';
 import '../components/book_card.dart';
 import '../components/skeleton_book_card.dart';
 import '../utils/dio_manager/dio_manager.dart';
@@ -32,7 +32,6 @@ class _SearchState extends State<Search> {
   }
 
   Future _fetchBooks(String searchQuery) async {
-    // final searchQuery = textEditingController.text;
     final response = await DioManager().get("$baseUrl$searchQuery$bodyUrl$apiKey");
 
     return response;
@@ -52,7 +51,7 @@ class _SearchState extends State<Search> {
         automaticallyImplyLeading: false,
         title: Center(
           child: Text(
-            "InkScribe",
+            'InkScribe',
             style: GoogleFonts.playfairDisplay(
               fontSize: 22.0,
               fontWeight: FontWeight.bold,
@@ -114,7 +113,13 @@ class _SearchState extends State<Search> {
                           },
                         );
                       } else {
-                        return const Text('No books found');
+                        return Text(
+                          'No results found for "${textEditingController.text}"',
+                          style: GoogleFonts.roboto(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        );
                       }
                     },
                   )
@@ -124,6 +129,7 @@ class _SearchState extends State<Search> {
                       'Go ahead and search for a book.',
                       style: GoogleFonts.roboto(
                         fontSize: 18.0,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
                   ),

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:inkscribe/pages/auth/sign_up.dart';
+import 'package:inkscribe/pages/master.dart';
 
 import '../../components/dialog_card.dart';
 import '../../utils/auth_service.dart';
@@ -65,13 +67,14 @@ class _LoginState extends State<Login> {
                       padding: const EdgeInsets.only(top: 10.0),
                       child: AuthButton(
                         text: 'Login',
-                        onPressed: () {
+                        onPressed: () async {
                           FormState? formState = _formKey.currentState;
                           if (formState!.validate()) {
-                            AuthServices().loginWithEmailAndPassword(
+                            await AuthServices().loginWithEmailAndPassword(
                               _email.text,
                               _password.text,
                             );
+                            Navigator.push(context, ZoomPageRoute(page: const Master()));
                           } else {
                             showDialog(
                               context: context,
@@ -118,7 +121,7 @@ class _LoginState extends State<Login> {
                 padding: EdgeInsets.symmetric(vertical: 20.0),
                 child: ThirdPartyAuthButton(
                   color: Colors.white,
-                  text: 'Sign Up with Google',
+                  text: 'Login with Google',
                   image: 'assets/google.png',
                 ),
               ),
@@ -150,10 +153,10 @@ class _LoginState extends State<Login> {
                   TextButton(
                     onPressed: () => Navigator.push(
                       context,
-                      ZoomPageRoute(page: const Login()),
+                      ZoomPageRoute(page: const SignUp()),
                     ),
                     child: Text(
-                      "Log in",
+                      "Sign Up",
                       style: GoogleFonts.roboto(
                         fontSize: 17.0,
                         fontWeight: FontWeight.bold,
