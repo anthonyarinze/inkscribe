@@ -6,11 +6,15 @@ class BookCard extends StatefulWidget {
   final String imageUrl;
   final String title;
   final String author;
+  final String id;
+  final bool isHomePage;
   const BookCard({
     super.key,
     required this.imageUrl,
     required this.title,
     required this.author,
+    required this.id,
+    required this.isHomePage,
   });
 
   @override
@@ -46,7 +50,7 @@ class _BookCardState extends State<BookCard> {
       child: Stack(
         children: [
           Positioned(
-            left: 120.0,
+            left: 118.0,
             top: 8.0,
             child: GestureDetector(
               onTap: () {
@@ -54,40 +58,48 @@ class _BookCardState extends State<BookCard> {
                   isBookmarked = !isBookmarked;
                 });
                 if (isBookmarked) {
-                  AuthServices().addToCollection(widget.title, widget.imageUrl, widget.author);
+                  AuthServices().addToCollection(
+                    widget.title,
+                    widget.imageUrl,
+                    widget.author,
+                    widget.id,
+                  );
                 } else {
-                  AuthServices().removeFromCollection(widget.title);
+                  AuthServices().removeFromCollection(widget.title, widget.id);
                 }
               },
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                child: isBookmarked
-                    ? Container(
-                        height: 40.0,
-                        width: 40.0,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xFFf2f7ff),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.bookmark_rounded,
+              child: Visibility(
+                visible: !widget.isHomePage,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: isBookmarked
+                      ? Container(
+                          height: 40.0,
+                          width: 40.0,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFFf2f7ff),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.bookmark_rounded,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          height: 40.0,
+                          width: 40.0,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFFf2f7ff),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.bookmark_add_outlined,
+                            ),
                           ),
                         ),
-                      )
-                    : Container(
-                        height: 40.0,
-                        width: 40.0,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color(0xFFf2f7ff),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.bookmark_add_outlined,
-                          ),
-                        ),
-                      ),
+                ),
               ),
             ),
           ),

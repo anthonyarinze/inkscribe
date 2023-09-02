@@ -105,9 +105,11 @@ class _SearchState extends State<Search> {
                                 ZoomPageRoute(page: const BookDetails()),
                               ),
                               child: BookCard(
-                                imageUrl: volumeInfo['imageLinks']['thumbnail'] ?? fallbackUrl,
+                                imageUrl: volumeInfo['imageLinks'] != null ? volumeInfo['imageLinks']['thumbnail'] : fallbackUrl,
                                 title: volumeInfo['title'] ?? "N/A",
                                 author: volumeInfo['authors'] != null && volumeInfo['authors'].isNotEmpty ? "By ${volumeInfo['authors'][0]}" : "N/A",
+                                id: data['items'][index]['id'],
+                                isHomePage: false,
                               ),
                             );
                           },

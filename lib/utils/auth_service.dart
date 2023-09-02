@@ -44,21 +44,36 @@ class AuthServices {
     }
   }
 
-  void addToCollection(String title, String imageUrl, String author) async {
+  Stream<Object> stream() {
+    return _firestore.collection('users').doc(currentUserUid).collection('bookmarks').snapshots();
+  }
+
+  void addToCollection(String title, String imageUrl, String author, String id) async {
     try {
-      await _firestore.collection('users').doc(currentUserUid).collection('bookmarks').doc(title).set({
-        'title': title,
-        'imageUrl': imageUrl,
-        'author': author,
-      });
+      final userBookDoc = _firestore.collection('users').doc(currentUserUid).collection('bookmarks').doc(title);
+
+      // Check if the book already exists in the user's collection
+      final docSnapshot = await userBookDoc.get();
+
+      if (!docSnapshot.exists) {
+        // The book doesn't exist in the user's collection, so add it;
+        await userBookDoc.set({
+          'title': title,
+          'imageUrl': imageUrl,
+          'author': author,
+          'id': id,
+        });
+      } else {
+        ReusableFunctions.logInfo("Selected title already in user's collection");
+      }
     } on FirebaseException catch (error) {
       ReusableFunctions.logError(error.message);
     }
   }
 
-  void removeFromCollection(String title) async {
+  void removeFromCollection(String? title, String? id) async {
     try {
-      await _firestore.collection('users').doc(currentUserUid).collection('bookmarks').doc(title).delete();
+      await _firestore.collection('users').doc(currentUserUid).collection('bookmarks').doc(title ?? id).delete();
     } on FirebaseException catch (error) {
       ReusableFunctions.logError(error.message);
     }
@@ -78,7 +93,8 @@ class AuthServices {
         final title = data['title'] ?? '';
         final imageUrl = data['imageUrl'] ?? '';
         final author = data['author'] ?? '';
-        books.add(BookCard(title: title, imageUrl: imageUrl, author: author));
+        final id = data['id'] ?? '';
+        books.add(BookCard(title: title, imageUrl: imageUrl, author: author, id: id, isHomePage: false));
       }
 
       return books;

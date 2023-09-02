@@ -1,8 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inkscribe/components/book_card.dart';
-import 'package:inkscribe/providers/index_provider.dart';
 import 'package:inkscribe/utils/auth_service.dart';
 import 'package:inkscribe/utils/functions.dart';
 
@@ -22,6 +22,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return response;
   }
+
+  bool isBottomSheetOpen = false;
 
   @override
   Widget build(BuildContext context) {
@@ -101,46 +103,85 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ],
               ),
             ),
-            FutureBuilder<List<BookCard>>(
-              future: fetchBooksFromDatabase(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator(); // Show loading indicator
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  final List<BookCard> books = snapshot.data!;
-                  return GridView.builder(
-                    shrinkWrap: true,
-                    itemCount: books.length,
-                    physics: const BouncingScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.75,
-                    ),
-                    itemBuilder: (context, index) {
-                      final book = books[index];
-                      return GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          ZoomPageRoute(page: const BookDetails()),
-                        ),
-                        child: BookCard(
-                          imageUrl: book.imageUrl,
-                          title: book.title,
-                          author: book.author,
-                        ),
-                      );
+            StreamBuilder<Object>(
+                stream: AuthServices().stream(),
+                builder: (context, snapshot) {
+                  return FutureBuilder<List<BookCard>>(
+                    future: fetchBooksFromDatabase(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator(); // Show loading indicator
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (snapshot.hasData) {
+                        final List<BookCard> books = snapshot.data!;
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          itemCount: books.length,
+                          physics: const BouncingScrollPhysics(),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.75,
+                          ),
+                          itemBuilder: (context, index) {
+                            final book = books[index];
+                            return GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                ZoomPageRoute(page: const BookDetails()),
+                              ),
+                              onLongPress: () => showOptionsBottomSheet(context, book.title, book.id),
+                              child: BookCard(
+                                imageUrl: book.imageUrl,
+                                title: book.title,
+                                author: book.author,
+                                id: book.id,
+                                isHomePage: true,
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        return const Text('No books found.');
+                      }
                     },
                   );
-                } else {
-                  return const Text('No books found.');
-                }
-              },
-            ),
+                }),
           ],
         ),
       ),
+    );
+  }
+
+  void showOptionsBottomSheet(BuildContext context, String title, String id) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              leading: const Icon(Icons.open_in_new),
+              title: const Text('Open Book'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  ZoomPageRoute(page: const BookDetails()),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.delete),
+              title: const Text('Remove Bookmark'),
+              onTap: () {
+                AuthServices().removeFromCollection(title, id);
+                fetchBooksFromDatabase();
+                Navigator.pop(context); // Close the bottom sheet
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

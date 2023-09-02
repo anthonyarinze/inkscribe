@@ -1,8 +1,6 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
 
@@ -38,9 +36,5 @@ class ReusableFunctions {
 
   Future<String?> getCachedUsername() async {
     return flutterSecureStorage.read(key: 'username');
-  }
-
-  void logUid() {
-    logDebug(FirebaseAuth.instance.currentUser!.uid);
   }
 }

@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "515055879977-o0s4egjdmfvjcdjjutsvkbndriia01hg.apps.googleusercontent.com",
+          "client_id": "515055879977-5lk3k7op9g5no3h3q8am9l6ucsrfo39v.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,8 +27,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "515055879977-o0s4egjdmfvjcdjjutsvkbndriia01hg.apps.googleusercontent.com",
+              "client_id": "515055879977-5lk3k7op9g5no3h3q8am9l6ucsrfo39v.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "515055879977-6o8olo0v5qdpiaadfq7gh9vkqt5pvfoi.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.inkscribe"
+              }
             }
           ]
         }
