@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../components/auth_button.dart';
 import '../../components/dialog_card.dart';
-import '../../components/page_builder.dart';
+import '../../components/page_builders/page_builder.dart';
 import '../../components/third_party_auth_button.dart';
 import 'login.dart';
 import '../master.dart';

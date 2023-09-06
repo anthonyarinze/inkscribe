@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:inkscribe/components/page_builders/book_details_builder.dart';
 import 'book_details.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../components/search_bar.dart';
-import '../components/page_builder.dart';
+import '../components/page_builders/page_builder.dart';
 import '../components/book_card.dart';
 import '../components/skeleton_book_card.dart';
 import '../utils/dio_manager/dio_manager.dart';
@@ -102,13 +103,22 @@ class _SearchState extends State<Search> {
                             return GestureDetector(
                               onTap: () => Navigator.push(
                                 context,
-                                ZoomPageRoute(page: const BookDetails()),
+                                bookDetailsPageBuilder(
+                                  BookDetails(
+                                    title: volumeInfo['title'] ?? "N/A",
+                                    author: volumeInfo['authors'] != null && volumeInfo['authors'].isNotEmpty ? "By ${volumeInfo['authors'][0]}" : "N/A",
+                                    synopsis: volumeInfo['description'] ?? "N/A",
+                                    image: volumeInfo['imageLinks'] != null ? volumeInfo['imageLinks']['thumbnail'] : fallbackUrl,
+                                    id: data['items'][index]['id'],
+                                  ),
+                                ),
                               ),
                               child: BookCard(
                                 imageUrl: volumeInfo['imageLinks'] != null ? volumeInfo['imageLinks']['thumbnail'] : fallbackUrl,
                                 title: volumeInfo['title'] ?? "N/A",
                                 author: volumeInfo['authors'] != null && volumeInfo['authors'].isNotEmpty ? "By ${volumeInfo['authors'][0]}" : "N/A",
                                 id: data['items'][index]['id'],
+                                synopsis: volumeInfo['description'] ?? "N/A",
                                 isHomePage: false,
                               ),
                             );

@@ -7,6 +7,7 @@ class BookCard extends StatefulWidget {
   final String title;
   final String author;
   final String id;
+  final String synopsis;
   final bool isHomePage;
   const BookCard({
     super.key,
@@ -15,6 +16,7 @@ class BookCard extends StatefulWidget {
     required this.author,
     required this.id,
     required this.isHomePage,
+    required this.synopsis,
   });
 
   @override
@@ -63,6 +65,7 @@ class _BookCardState extends State<BookCard> {
                     widget.imageUrl,
                     widget.author,
                     widget.id,
+                    widget.synopsis,
                   );
                 } else {
                   AuthServices().removeFromCollection(widget.title, widget.id);

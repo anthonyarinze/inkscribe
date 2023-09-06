@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:inkscribe/components/book_card.dart';
 import 'package:inkscribe/utils/functions.dart';
 
+import '../models/comment.dart';
+
 class AuthServices {
   static final FirebaseAuth _auth = FirebaseAuth.instance;
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -48,7 +50,11 @@ class AuthServices {
     return _firestore.collection('users').doc(currentUserUid).collection('bookmarks').snapshots();
   }
 
-  void addToCollection(String title, String imageUrl, String author, String id) async {
+  Stream<Object> commentsStream(String title) {
+    return _firestore.collection('users').doc(currentUserUid).collection('bookmarks').doc(title).collection('comments').snapshots();
+  }
+
+  void addToCollection(String title, String imageUrl, String author, String id, String synopsis) async {
     try {
       final userBookDoc = _firestore.collection('users').doc(currentUserUid).collection('bookmarks').doc(title);
 
@@ -62,6 +68,7 @@ class AuthServices {
           'imageUrl': imageUrl,
           'author': author,
           'id': id,
+          'synopsis': synopsis,
         });
       } else {
         ReusableFunctions.logInfo("Selected title already in user's collection");
@@ -94,11 +101,62 @@ class AuthServices {
         final imageUrl = data['imageUrl'] ?? '';
         final author = data['author'] ?? '';
         final id = data['id'] ?? '';
-        books.add(BookCard(title: title, imageUrl: imageUrl, author: author, id: id, isHomePage: false));
+        final synopsis = data['synopsis'] ?? '';
+
+        books.add(BookCard(
+          title: title,
+          imageUrl: imageUrl,
+          author: author,
+          id: id,
+          isHomePage: false,
+          synopsis: synopsis,
+        ));
       }
 
       return books;
     }
     return []; // Return empty list if user is not logged in
+  }
+
+  Future<void> addCommentToBook(
+    String title,
+    String comment,
+  ) async {
+    try {
+      final userBookDoc = _firestore.collection('users').doc(currentUserUid).collection('bookmarks').doc(title);
+
+      // Check if the book already exists in the user's collection
+      final docSnapshot = await userBookDoc.get();
+
+      if (docSnapshot.exists) {
+        // The book exists in the user's collection, so add the comment;
+        await userBookDoc.collection('comments').add({
+          'comment': comment,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      } else {
+        ReusableFunctions.logInfo("Selected title not found in user's collection");
+      }
+    } on FirebaseException catch (error) {
+      ReusableFunctions.logError(error.message);
+    }
+  }
+
+  Future<List<String>> getCommentsForBook(String title) async {
+    try {
+      final userBookDoc = _firestore.collection('users').doc(currentUserUid).collection('bookmarks').doc(title).collection('comments');
+
+      final querySnapshot = await userBookDoc.get();
+
+      final comments = querySnapshot.docs.map((doc) {
+        final data = doc.data();
+        return data['comment'] as String;
+      }).toList();
+
+      return comments;
+    } on FirebaseException catch (error) {
+      ReusableFunctions.logError(error.message);
+      return []; // Return an empty list in case of an error
+    }
   }
 }

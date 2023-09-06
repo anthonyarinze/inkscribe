@@ -7,7 +7,7 @@ import '../../components/dialog_card.dart';
 import '../../utils/auth_service.dart';
 import '../../components/auth_button.dart';
 import '../../components/auth_form_texfield.dart';
-import '../../components/page_builder.dart';
+import '../../components/page_builders/page_builder.dart';
 import '../../components/third_party_auth_button.dart';
 
 class Login extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:inkscribe/components/page_builder.dart';
+import 'package:inkscribe/components/page_builders/page_builder.dart';
 import 'package:inkscribe/pages/auth/login.dart';
 import 'package:inkscribe/pages/master.dart';
 

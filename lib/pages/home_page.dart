@@ -1,12 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inkscribe/components/book_card.dart';
+import 'package:inkscribe/components/page_builders/book_details_builder.dart';
 import 'package:inkscribe/utils/auth_service.dart';
 import 'package:inkscribe/utils/functions.dart';
 
-import '../components/page_builder.dart';
 import 'book_details.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -128,14 +127,30 @@ class _HomePageState extends ConsumerState<HomePage> {
                             return GestureDetector(
                               onTap: () => Navigator.push(
                                 context,
-                                ZoomPageRoute(page: const BookDetails()),
+                                bookDetailsPageBuilder(
+                                  BookDetails(
+                                    title: book.title,
+                                    author: book.author,
+                                    synopsis: book.synopsis,
+                                    image: book.imageUrl,
+                                    id: book.id,
+                                  ),
+                                ),
                               ),
-                              onLongPress: () => showOptionsBottomSheet(context, book.title, book.id),
+                              onLongPress: () => showOptionsBottomSheet(
+                                context,
+                                book.title,
+                                book.id,
+                                book.author,
+                                book.synopsis,
+                                book.imageUrl,
+                              ),
                               child: BookCard(
                                 imageUrl: book.imageUrl,
                                 title: book.title,
                                 author: book.author,
                                 id: book.id,
+                                synopsis: book.synopsis,
                                 isHomePage: true,
                               ),
                             );
@@ -153,7 +168,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  void showOptionsBottomSheet(BuildContext context, String title, String id) {
+  void showOptionsBottomSheet(BuildContext context, String title, String id, String author, String synopsis, String image) {
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
@@ -166,7 +181,15 @@ class _HomePageState extends ConsumerState<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  ZoomPageRoute(page: const BookDetails()),
+                  bookDetailsPageBuilder(
+                    BookDetails(
+                      title: title,
+                      author: author,
+                      synopsis: synopsis,
+                      image: image,
+                      id: id,
+                    ),
+                  ),
                 );
               },
             ),
