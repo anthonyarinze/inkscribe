@@ -26,17 +26,20 @@ class SearchPageSearchBar extends StatelessWidget {
             borderRadius: BorderRadius.circular(4.0),
           ),
           child: TextField(
+            style: TextStyle(color: Colors.black.withOpacity(0.6)),
             controller: textEditingController,
             onSubmitted: onSubmitted,
+            cursorColor: Colors.black,
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: "Search for a book...",
+              fillColor: Colors.black,
               hintStyle: GoogleFonts.roboto(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w500,
-                color: Colors.grey,
+                color: Colors.black,
               ),
-              prefixIcon: const Icon(Icons.search_rounded),
+              prefixIcon: Icon(Icons.search_rounded, color: Colors.black.withOpacity(0.6)),
               suffixIcon: SizedBox(
                 width: 50,
                 height: 50.0,
@@ -53,7 +56,10 @@ class SearchPageSearchBar extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {},
-                      icon: const Icon(Icons.tune_rounded),
+                      icon: Icon(
+                        Icons.tune_rounded,
+                        color: Colors.black.withOpacity(0.6),
+                      ),
                     ),
                   ],
                 ),

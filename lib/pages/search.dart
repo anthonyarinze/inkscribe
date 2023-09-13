@@ -108,7 +108,7 @@ class _SearchState extends State<Search> {
                                     author: volumeInfo['authors'] != null && volumeInfo['authors'].isNotEmpty ? "By ${volumeInfo['authors'][0]}" : "N/A",
                                     synopsis: volumeInfo['description'] ?? "N/A",
                                     image: volumeInfo['imageLinks'] != null ? volumeInfo['imageLinks']['thumbnail'] : fallbackUrl,
-                                    id: data['items'][index]['id'],
+                                    id: data['items'][index]['id'] ?? "0000",
                                   ),
                                 ),
                               ),

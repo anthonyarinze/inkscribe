@@ -215,18 +215,10 @@ class AuthServices {
   }
 
   Future<void> resetPassword(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-    } on FirebaseException catch (error) {
-      ReusableFunctions.logError(error.message);
-    }
+    await _auth.sendPasswordResetEmail(email: email);
   }
 
   Future<void> confirmPasswordResetCode(String code, String newPassword) async {
-    try {
-      await _auth.confirmPasswordReset(code: code, newPassword: newPassword);
-    } on FirebaseException catch (error) {
-      ReusableFunctions.logError(error.message);
-    }
+    await _auth.confirmPasswordReset(code: code, newPassword: newPassword);
   }
 }

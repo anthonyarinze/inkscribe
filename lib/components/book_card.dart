@@ -1,6 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:inkscribe/providers/theme_provier.dart';
+import 'package:inkscribe/theme/palette.dart';
 import 'package:inkscribe/utils/auth_service.dart';
+import 'package:inkscribe/utils/functions.dart';
+
+import 'dialog_card.dart';
 
 class BookCard extends StatefulWidget {
   final String imageUrl;
@@ -60,45 +67,90 @@ class _BookCardState extends State<BookCard> {
                   isBookmarked = !isBookmarked;
                 });
                 if (isBookmarked) {
-                  AuthServices().addToCollection(
-                    widget.title,
-                    widget.imageUrl,
-                    widget.author,
-                    widget.id,
-                    widget.synopsis,
+                  try {
+                    AuthServices().addToCollection(
+                      widget.title,
+                      widget.imageUrl,
+                      widget.author,
+                      widget.id,
+                      widget.synopsis,
+                    );
+                  } on FirebaseException catch (error) {
+                    ReusableFunctions.logError(error.message);
+                    showDialog(
+                      context: context,
+                      builder: (context) => CustomDialogBox(
+                        title: "Error",
+                        descriptions: error.message.toString(),
+                        text: "Close",
+                      ),
+                    );
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("${widget.title} added to your collection."),
+                    ),
                   );
                 } else {
-                  AuthServices().removeFromCollection(widget.title, widget.id);
+                  try {
+                    AuthServices().removeFromCollection(widget.title, widget.id);
+                  } on FirebaseException catch (error) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => CustomDialogBox(
+                        title: "Error",
+                        descriptions: error.message.toString(),
+                        text: "Close",
+                      ),
+                    );
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("${widget.title} removed from your collection."),
+                    ),
+                  );
                 }
               },
               child: Visibility(
                 visible: !widget.isHomePage,
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
+                  switchInCurve: Curves.bounceInOut,
+                  switchOutCurve: Curves.bounceOut,
                   child: isBookmarked
                       ? Container(
                           height: 40.0,
                           width: 40.0,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color(0xFFf2f7ff),
+                            color: const Color(0xFFf2f7ff),
+                            border: Border.all(
+                              color: Palette.darkThemeBackground,
+                              width: 3.0,
+                            ),
                           ),
                           child: const Center(
                             child: Icon(
                               Icons.bookmark_rounded,
+                              color: Colors.black,
                             ),
                           ),
                         )
                       : Container(
                           height: 40.0,
                           width: 40.0,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Color(0xFFf2f7ff),
+                            color: const Color(0xFFf2f7ff),
+                            border: Border.all(
+                              color: Palette.darkThemeBackground,
+                              width: 1.0,
+                            ),
                           ),
                           child: const Center(
                             child: Icon(
                               Icons.bookmark_add_outlined,
+                              color: Colors.black,
                             ),
                           ),
                         ),
@@ -109,45 +161,50 @@ class _BookCardState extends State<BookCard> {
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                height: 60,
-                width: 180.0,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(4.0),
-                    bottomRight: Radius.circular(4.0),
-                  ),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        widget.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
-                          fontSize: 12.0,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),
+              Consumer(
+                builder: (context, ref, child) {
+                  final themeModeState = ref.watch(themesProvider);
+                  return Container(
+                    height: 60,
+                    width: 180.0,
+                    decoration: BoxDecoration(
+                      color: themeModeState == ThemeMode.light ? Colors.white : Palette.darkThemeBackground,
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(4.0),
+                        bottomRight: Radius.circular(4.0),
                       ),
-                      Text(
-                        widget.author,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
-                          fontSize: 13.0,
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                        ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.roboto(
+                              fontSize: 12.0,
+                              color: themeModeState == ThemeMode.light ? Colors.black : Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            widget.author,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.roboto(
+                              fontSize: 13.0,
+                              color: themeModeState == ThemeMode.light ? Colors.black : Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               ),
             ],
           ),

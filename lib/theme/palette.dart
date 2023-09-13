@@ -34,5 +34,8 @@ class Palette {
       brightness: Brightness.dark,
       background: darkThemeBackground,
     ),
+    textTheme: const TextTheme(
+      titleMedium: TextStyle(color: Colors.red),
+    ),
   );
 }

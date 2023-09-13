@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:inkscribe/pages/auth/reset_password.dart';
 import 'package:inkscribe/pages/auth/sign_up.dart';
 import 'package:inkscribe/pages/master.dart';
 
@@ -8,7 +9,6 @@ import '../../utils/auth_service.dart';
 import '../../components/auth_button.dart';
 import '../../components/auth_form_texfield.dart';
 import '../../components/page_builders/page_builder.dart';
-import '../../components/third_party_auth_button.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -90,8 +90,37 @@ class _LoginState extends State<Login> {
                   ],
                 ),
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3.0),
+                    child: Text(
+                      "Forgot password?",
+                      style: GoogleFonts.roboto(
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      ZoomPageRoute(page: const ResetPassword()),
+                    ),
+                    child: Text(
+                      "Reset Password",
+                      style: GoogleFonts.roboto(
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               Padding(
-                padding: const EdgeInsets.only(top: 20.0),
+                padding: const EdgeInsets.only(top: 10.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -115,20 +144,6 @@ class _LoginState extends State<Login> {
                     ),
                   ],
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-                child: ThirdPartyAuthButton(
-                  color: Colors.white,
-                  text: 'Login with Google',
-                  image: 'assets/google.png',
-                ),
-              ),
-              const ThirdPartyAuthButton(
-                color: Color(0xFF5c6bc0),
-                text: 'Login with Discord',
-                image: 'assets/discord2.png',
-                fontColor: Colors.white,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
