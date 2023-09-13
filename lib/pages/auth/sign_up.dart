@@ -47,7 +47,6 @@ class _SignUpState extends State<SignUp> {
                   "InkScribe",
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 25.0,
-                    color: Colors.black.withOpacity(0.5),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -164,7 +163,6 @@ class _SignUpState extends State<SignUp> {
                     "Already have an account?",
                     style: GoogleFonts.roboto(
                       fontSize: 17.0,
-                      color: Colors.black.withOpacity(0.5),
                       fontWeight: FontWeight.w500,
                     ),
                   ),

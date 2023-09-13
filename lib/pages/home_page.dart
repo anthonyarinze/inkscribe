@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inkscribe/components/book_card.dart';
 import 'package:inkscribe/components/page_builders/book_details_builder.dart';
+import 'package:inkscribe/components/skeleton_book_card.dart';
 import 'package:inkscribe/utils/auth_service.dart';
 import 'package:inkscribe/utils/functions.dart';
+import 'package:shimmer/shimmer.dart';
 
 import 'book_details.dart';
 
@@ -73,43 +75,31 @@ class _HomePageState extends ConsumerState<HomePage> {
             const Padding(
               padding: EdgeInsets.only(top: 8.0),
               child: Divider(
-                indent: 30.0,
-                endIndent: 30.0,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SelectableText(
-                "A whole world of books awaits you! Add something to your library to get started.",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.roboto(fontSize: 16.0, fontWeight: FontWeight.w500),
-              ),
-            ),
-            InkWell(
-              onTap: () {},
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    child: Row(
-                      children: [
-                        Icon(Icons.book, size: 28.0),
-                        Text('Explore the book store'),
-                      ],
-                    ),
-                  ),
-                  Icon(Icons.arrow_forward_ios_rounded),
-                ],
+                indent: 20.0,
+                endIndent: 20.0,
               ),
             ),
             StreamBuilder<Object>(
-                stream: AuthServices().stream(),
+                stream: AuthServices().bookmarkStream(),
                 builder: (context, snapshot) {
                   return FutureBuilder<List<BookCard>>(
                     future: fetchBooksFromDatabase(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator(); // Show loading indicator
+                        return GridView.builder(
+                          itemCount: 2,
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.75,
+                          ),
+                          itemBuilder: (context, index) => Shimmer.fromColors(
+                            baseColor: Colors.grey,
+                            highlightColor: Colors.white,
+                            child: const SkeletonBookCard(),
+                          ),
+                        );
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else if (snapshot.hasData) {

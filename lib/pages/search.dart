@@ -6,7 +6,6 @@ import 'book_details.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../components/search_bar.dart';
-import '../components/page_builders/page_builder.dart';
 import '../components/book_card.dart';
 import '../components/skeleton_book_card.dart';
 import '../utils/dio_manager/dio_manager.dart';

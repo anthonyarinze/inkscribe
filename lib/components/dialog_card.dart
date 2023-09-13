@@ -59,14 +59,14 @@ class CustomDialogBoxState extends State<CustomDialogBox> {
             children: <Widget>[
               Text(
                 widget.title,
-                style: GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w600),
+                style: GoogleFonts.roboto(fontSize: 22, fontWeight: FontWeight.w600, color: Colors.black),
               ),
               const SizedBox(
                 height: 15,
               ),
               Text(
                 widget.descriptions,
-                style: GoogleFonts.roboto(fontSize: 14),
+                style: GoogleFonts.roboto(fontSize: 14, color: Colors.black),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(
@@ -78,7 +78,7 @@ class CustomDialogBoxState extends State<CustomDialogBox> {
                     onPressed: widget.onPressed ?? () => Navigator.pop(context),
                     child: Text(
                       widget.text,
-                      style: GoogleFonts.roboto(fontSize: 18),
+                      style: GoogleFonts.roboto(fontSize: 18, color: Colors.white),
                     )),
               ),
             ],

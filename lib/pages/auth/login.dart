@@ -44,7 +44,6 @@ class _LoginState extends State<Login> {
                   "InkScribe",
                   style: GoogleFonts.playfairDisplay(
                     fontSize: 25.0,
-                    color: Colors.black.withOpacity(0.5),
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -133,20 +132,22 @@ class _LoginState extends State<Login> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    "New to ",
-                    style: GoogleFonts.roboto(
-                      fontSize: 17.0,
-                      color: Colors.black.withOpacity(0.5),
-                      fontWeight: FontWeight.w500,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 3.0),
+                    child: Text(
+                      "New to ",
+                      style: GoogleFonts.roboto(
+                        fontSize: 17.0,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                   Text(
                     "InkScribe?",
                     style: GoogleFonts.playfairDisplay(
                       fontSize: 17.0,
-                      color: Colors.black.withOpacity(0.5),
                       fontWeight: FontWeight.w500,
                     ),
                   ),

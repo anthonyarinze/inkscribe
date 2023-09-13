@@ -1,6 +1,11 @@
-class Comment {
-  final String text;
-  final DateTime timestamp;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-  Comment(this.text, this.timestamp);
+class Comment {
+  final String title;
+  final String text;
+  final Timestamp timestamp;
+  final String id;
+  final int color;
+
+  Comment(this.title, this.text, this.timestamp, this.id, this.color);
 }

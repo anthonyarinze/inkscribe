@@ -131,6 +131,7 @@ class _BookCardState extends State<BookCard> {
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.roboto(
                           fontSize: 12.0,
+                          color: Colors.black,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -140,6 +141,7 @@ class _BookCardState extends State<BookCard> {
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.roboto(
                           fontSize: 13.0,
+                          color: Colors.black,
                           fontWeight: FontWeight.w500,
                         ),
                       ),

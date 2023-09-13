@@ -27,6 +27,9 @@ dependencies:
   cloud_firestore: ^4.9.0
   flutter_secure_storage: ^8.0.0
   flutter_riverpod: ^2.3.10
+  intl: ^0.18.1
+  expansion_tile_card: ^3.0.0
+  hooks_riverpod: ^2.4.0
 
 dev_dependencies:
   flutter_test:

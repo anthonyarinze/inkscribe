@@ -82,7 +82,6 @@ class _AuthFormTextFieldState extends State<AuthFormTextField> {
                       },
                       icon: Icon(
                         isVisible ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.black,
                       ),
                     )
                   : const SizedBox.shrink(),
